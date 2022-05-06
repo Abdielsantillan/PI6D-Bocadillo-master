@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1076423655129",
+    "project_id": "bocadillo-93bbf",
+    "storage_bucket": "bocadillo-93bbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076423655129:android:6503a55f4d3b964dcf48c8",
+        "android_client_info": {
+          "package_name": "com.proyecto6d"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076423655129-g2d7k8bi2jd6loe10lal4i46f1leic0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9Xr1-fs9mHv7dGioqTSvDCjmyJAm9ZCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076423655129-g2d7k8bi2jd6loe10lal4i46f1leic0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
