@@ -1,7 +1,9 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button,Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
+import  auth from '@react-native-firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 const ScreenRegistro = ( {navigation} ) => {
@@ -9,22 +11,70 @@ const ScreenRegistro = ( {navigation} ) => {
   const [password, setPassword] =  React.useState('')
   const [name,setName]= React.useState('');
   const [phone,setTelefono]=React.useState('');
+  let jwtToken;
+
+  async function verificacion(){
+    
+    firestore()
+    .collection('Usuarios')
+    .doc(jwtToken)
+    .get()
+    .then(documentSnapshot => {
+        console.log('User exists: ', documentSnapshot.exists);
+        firestore()
+        .collection('Usuarios')
+        .doc(jwtToken)
+        .set({
+          nombre: name,
+          correo: email,
+          contrasena:password,
+          telefono: phone
+        })
+        .then(() => {
+          console.log('User added!');
+        });
+    });
+  }
+
+  function CrearUsuarios(){
+    let jwtToken = auth().currentUser.uid;
+    console.log(jwtToken);
+    auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      verificacion();
+      Alert.alert(
+        "Exito",
+        "Usuario registrado Correctamente",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+    })
+    .catch(error => {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log('That email address is already in use!');
+      }
+  
+      if (error.code === 'auth/invalid-email') {
+        console.log('That email address is invalid!');
+      }
+  
+      console.error(error);
+    });
+  }
+
+  
+    
   
 
-  const ref = firestore().collection('Usuarios');
- 
-  async function addTodo() {
-      await ref.add({
-        nombre: name,
-        correo: email,
-        contrasena:password,
-        telefono: phone
-        });
 
-      }
   return (
       
     <View style={styles.mainContainer}>
+     
+
       <View style={styles.backContainer}>
         <Text style={styles.titulo}>Registrate</Text>        
         
@@ -60,12 +110,12 @@ const ScreenRegistro = ( {navigation} ) => {
      
         <Button 
         title='Crear Cuenta' style={styles.mainBoton} 
-        onPress={() => addTodo()}
+        onPress={() => CrearUsuarios()}
         color='#cb0519'/>
 
-        <Text style={styles.textoSecundario}><Text style={{color: '#cb0519'}} onPress = { () => { navigation.navigate('Inicio') }}>Iniciar Sesión</Text></Text>
+        <Text style={styles.textoSecundario}><Text style={{color: '#cb0519'}} onPress = { () => { navigation.navigate('Inicio')}}>Iniciar Sesión</Text></Text>
+         
       </View>
-      
     </View>
   );
 }
@@ -113,8 +163,9 @@ const styles = StyleSheet.create({
     marginTop:10,
   },
   Input:{
-    width:'90%'
-  }, 
+    width:'90%',
+    color:'black'
+  }
 });
 
 export default ScreenRegistro;

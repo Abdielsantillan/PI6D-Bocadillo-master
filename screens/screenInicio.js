@@ -1,8 +1,49 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button , Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
+import firestore from '@react-native-firebase/firestore';
+
 const ScreenInicio = ( {navigation} ) =>{
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] =  React.useState('')
+  
+  
+
+
+  function IniciarSesion(){
+    firestore()
+    .collection('Usuarios')
+    .doc(email)
+    .get()
+    .then(documentSnapshot => {
+      if (documentSnapshot.exists){
+        if(documentSnapshot.get('contrasena') == password){
+          console.log('Logeado');
+          navigation.navigate('General')
+        }else{
+          Alert.alert(
+            "Error",
+            "Correo o Contraseña incorrecta",
+            [
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ],
+            { cancelable: false }
+          );
+        }
+      }else{
+        Alert.alert(
+          "Error",
+          "Correo o Contraseña incorrectas",
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+      }
+    });
+  }
   return (
       
     <View style={styles.mainContainer}>
@@ -11,13 +52,13 @@ const ScreenInicio = ( {navigation} ) =>{
         
         <Text style={styles.subtitulo}>Correo Electronico</Text>
         <View style={styles.container}>
-          <TextInput style={styles.Input} placeholder='Correo Electronico'/>
+          <TextInput onChangeText={(text) => setEmail(text)} style={styles.Input} placeholder='Correo Electronico'/>
           <Icon name="user" size={30} color="#999" /> 
         </View>
 
         <Text style={styles.subtitulo}>Contraseña</Text>
         <View style={styles.container}>
-          <TextInput style={styles.Input} secureTextEntry={true} placeholder='Contraseña'/>
+          <TextInput onChangeText={(text) => setPassword(text)} style={styles.Input} secureTextEntry={true} placeholder='Contraseña'/>
           <Icon name="key" size={30} color="#999" /> 
         </View>
 
@@ -25,7 +66,7 @@ const ScreenInicio = ( {navigation} ) =>{
         <Button 
           title='Iniciar Sesion' 
           color='#cb0519' 
-          onPress = { () => { navigation.navigate('General') }}
+          onPress = { () => { IniciarSesion() }}
           />
 
         <Text style={styles.textoSecundario}>¿No tienes cuenta? <Text style={{color: '#cb0519'}} onPress = { () => { navigation.navigate('Registro') }}>Registrate Aquí</Text></Text>
@@ -74,7 +115,8 @@ const styles = StyleSheet.create({
     marginTop:10,
   },
   Input:{
-    width:'90%'
+    width:'90%',
+    color:'black',
   }
 });
 
